@@ -51,6 +51,11 @@ module DataMapper
             # now. All other typecasting is handled by datamapper
             # separately.
             record[name] = [Integer, Date].include?(property.primitive) ? property.typecast( value ) : value
+            
+            # If typecast value is a Symbol it's most likely part of an enum which is stored as an Integer
+            # change the value back to an integer
+            record[name] = value.to_s.to_i if property.typecast(value).class == Symbol
+            
             record
           end
         end
